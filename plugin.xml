@@ -34,7 +34,8 @@
     <config-file target="AndroidManifest.xml" parent="/manifest">
       <uses-feature android:name="android.hardware.sensor.stepcounter" />
       <uses-feature android:name="android.hardware.sensor.stepdetector" />
-        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+      <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+      <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     </config-file>
 
     <config-file target="res/xml/config.xml" parent="/*">

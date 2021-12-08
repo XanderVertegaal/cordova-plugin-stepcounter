@@ -44,6 +44,10 @@ import java.lang.Integer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+
 public class CordovaStepCounter extends CordovaPlugin {
 
     private final String TAG = "CordovaStepCounter";
@@ -122,6 +126,12 @@ public class CordovaStepCounter extends CordovaPlugin {
             callbackContext.success( can ? 1 : 0 );
         }
         else if (ACTION_START.equals(action)) {
+            if(ContextCompat.checkSelfPermission(cordova.getContext(),
+                    android.Manifest.permission.ACTIVITY_RECOGNITION) == android.content.pm.PackageManager.PERMISSION_DENIED){
+                //ask for permission
+                ActivityCompat.requestPermissions(cordova.getActivity(), new String[]{android.Manifest.permission.ACTIVITY_RECOGNITION}, 1);
+            }
+
 
             if(!pActive){
                 Log.i(TAG, "Starting StepCounterService");
