@@ -59,6 +59,7 @@ public class CordovaStepCounter extends CordovaPlugin {
     private final String ACTION_GET_TODAY_STEPS  = "get_today_step_count";
     private final String ACTION_CAN_COUNT_STEPS  = "can_count_steps";
     private final String ACTION_GET_HISTORY      = "get_history";
+    private final String ACTION_REQUEST_PERMISSION  = "request_permission";
 
     public static final String USER_DATA_PREF              = "UserData";
     public static final String PEDOMETER_HISTORY_PREF      = "pedometerData";
@@ -71,6 +72,9 @@ public class CordovaStepCounter extends CordovaPlugin {
 
     private StepCounterService stepCounterService;
     private boolean bound = false;
+
+    // instance of the call back when requesting or checking authorisation
+    private CallbackContext authReqCallbackCtx;
 
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -107,6 +111,23 @@ public class CordovaStepCounter extends CordovaPlugin {
         super.onStart();
     }
 
+  @Override
+  public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
+      Log.i(TAG, "onRequestPermissionResult");
+
+      for (int i = 0; i < grantResults.length; i++) {
+        if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+          String errmsg = "Permission denied ";
+          for (String perm : permissions) {
+            errmsg += " " + perm;
+          }
+          authReqCallbackCtx.error("Permission denied: " + permissions[i]);
+          return;
+        }
+      }
+      authReqCallbackCtx.success("True");
+  }
+
     @Override
     public boolean execute(String action, JSONArray data, CallbackContext callbackContext) throws JSONException {
         LOG.i(TAG, "execute()");
@@ -125,14 +146,18 @@ public class CordovaStepCounter extends CordovaPlugin {
             Log.i(TAG, "Checking if device has step counter APIS: "+ can);
             callbackContext.success( can ? 1 : 0 );
         }
-        else if (ACTION_START.equals(action)) {
+        else if (ACTION_REQUEST_PERMISSION.equals(action)) {
             if(ContextCompat.checkSelfPermission(cordova.getContext(),
                     android.Manifest.permission.ACTIVITY_RECOGNITION) == android.content.pm.PackageManager.PERMISSION_DENIED){
                 //ask for permission
-                ActivityCompat.requestPermissions(cordova.getActivity(), new String[]{android.Manifest.permission.ACTIVITY_RECOGNITION}, 1);
+              String [] permissions = { android.Manifest.permission.ACTIVITY_RECOGNITION };
+              cordova.requestPermissions(this, 0, permissions);
+            }else {
+                callbackContext.success("True");
             }
-
-
+            this.authReqCallbackCtx = callbackContext;
+        }
+        else if (ACTION_START.equals(action)) {
             if(!pActive){
                 Log.i(TAG, "Starting StepCounterService");
                 //Update pedometerActive preference

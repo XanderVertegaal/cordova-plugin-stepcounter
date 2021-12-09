@@ -35,7 +35,7 @@ module.exports = {
         offset = parseInt(offset) || 0;
         cordova.exec(successCallback, errorCallback, "CordovaStepCounter", "start", [offset]);
     },
- 
+
     stop: function ( successCallback, errorCallback) {
         cordova.exec(successCallback, errorCallback, "CordovaStepCounter", "stop", []);
     },
@@ -47,14 +47,18 @@ module.exports = {
     getStepCount: function (successCallback, errorCallback) {
         cordova.exec(successCallback, errorCallback, "CordovaStepCounter", "get_step_count", []);
     },
- 
+
+    requestPermission: function(successCallback, errorCallback) {
+      cordova.exec(successCallback, errorCallback, "CordovaStepCounter", "request_permission", []);
+    },
+
     deviceCanCountSteps: function (successCallback, errorCallback) {
         cordova.exec(function(res) {successCallback(!!res);}, errorCallback, "CordovaStepCounter", "can_count_steps", []);
     },
 
     getHistory: function (successCallback, errorCallback) {
         cordova.exec(function(result){
-          var parsedResult = JSON.parse(result);  
+          var parsedResult = JSON.parse(result);
           successCallback(parsedResult);
         },errorCallback, "CordovaStepCounter", "get_history", []);
     }

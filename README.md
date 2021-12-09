@@ -23,6 +23,9 @@ Edit `www/js/index.html` and add the following code inside `onDeviceReady`
     var failure = function() {
         alert("Error calling CordovaStepCounter Plugin");
     }
+    
+    // Only once request permission returns true you can start the stepcounter
+    stepcounter.requestPermission(success, failure);
 
     // Start the step counter
     // startingOffset will be added to the total steps counted in this session.
@@ -70,6 +73,10 @@ Run the code
 ## Known Issues
 
 No issues found for the moment, you can check the todo list below for enhancement that are waiting
+
+## Changes in 0.0.7
+
+Added requestPermission that needs to be called since android 8 in order to use this plugin
 
 ## Changes in 0.0.6
 
