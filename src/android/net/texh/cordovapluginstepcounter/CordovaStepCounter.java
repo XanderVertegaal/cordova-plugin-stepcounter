@@ -282,10 +282,14 @@ public class CordovaStepCounter extends CordovaPlugin {
 
     @Override
     public void onDestroy() {
-        if(bound){
-            Activity activity = this.cordova.getActivity();
-            activity.unbindService(mConnection);
-        }
+        Activity activity = this.cordova.getActivity();
+        activity.unbindService(mConnection);
+
+        Log.i(TAG, "Setting pedometer as inactive !");
+        SharedPreferences sharedPref = activity.getSharedPreferences(USER_DATA_PREF, Context.MODE_PRIVATE);
+        this.setPedometerIsActive(sharedPref, false);
+        bound = false;
+
         super.onDestroy();
     }
 
