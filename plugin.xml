@@ -24,7 +24,7 @@
              * This class is triggered upon reboot of the device. It needs to re-register
              * the STEP_COUNTER with the StepCounterService
              -->
-        <receiver android:name="net.texh.cordovapluginstepcounter.StepCounterBootReceiver" >
+        <receiver android:name="net.texh.cordovapluginstepcounter.StepCounterBootReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
